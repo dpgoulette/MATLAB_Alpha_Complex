@@ -1,4 +1,4 @@
-DT=DelaunayTri(Flatdata);
+DT=DelaunayTri(FlatDataExample);
 [VV VC]=voronoiDiagram(DT);
 
 % In our work we choose to remove data that is on the boundary of the data
@@ -19,9 +19,9 @@ DT=DelaunayTri(Flatdata);
 ID = [NaN; pointLocation(DT,VV(2:length(VV),:))];
 BadVV = find(isnan(ID));%creates index vector of bad vor verts
 
-%Now we find the bad data.  "Bad data" is on the boundary of the data space
-%so it has ind the vertices in the data that have a voronoi cell which
-%includes a bad voronoi vertex.  Create an index of "BadDataID."
+% Now we find the bad data.  "Bad data" is on the boundary of the data space
+% so it has ind the vertices in the data that have a voronoi cell which
+% includes a bad voronoi vertex.  Create an index of "BadDataID."
 BadDataID = zeros(length(DT.X),1);
 a=1;
 for b=1:length(VC)
@@ -43,7 +43,7 @@ DTedges=edges(DT);
 
 % Now remove bad triangles.  They are "bad" if they contain
 
-[R,~] = find(ismember(DTtris, BadData));
+[R,~] = find(ismember(DTtris, BadDataID));
 R = unique(R);
 cells2 = DTtris;
 cells2(R,:) = [];
@@ -57,11 +57,11 @@ RCC(R)=[];
 cells2=[cells2, RCC];
 
 % Remove the bad one cells (edges).
-[R,~]=find(ismember(DTedges,BadData));
+[R,~]=find(ismember(DTedges,BadDataID));
 R=unique(R);
 goodEdges=DTedges;
 goodEdges(R,:)=[];
-%find the epsilon for each edge
-cells1 = EpsilonOneCells2d(DT.X,goodEdges,VV,VC);
+% Find the epsilon for each edge
+cells1 = EpsilonOneCells2d(DT,goodEdges,VV,VC);
 
 clear a b R ID BadVV goodEdges
